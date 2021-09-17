@@ -48,12 +48,7 @@ dockerImage = ''
 	    
 	    stage("Push Docker Image") {
 		    steps {
-			    script {
-				    /*echo "Push Docker Image"
-				    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
-            				sh "docker login -u ameintu -p ${dockerhub}"
-				    }
-				        myimage.push("${env.BUILD_ID}")*/
+			   
 				    script {
             docker.withRegistry( '', registryCredential ) {
                 dockerImage.push()
@@ -61,6 +56,7 @@ dockerImage = ''
 				    
 			    }
 		    }
+	    }
 	    }
 	    
 	    stage('Deploy to K8s') {
