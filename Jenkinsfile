@@ -1,14 +1,17 @@
 pipeline {
     agent any
 	tools {
-		maven 'Maven'
+		maven 'MAVEN_HOME'
 	}
 	
-	environment {
-		PROJECT_ID = 'jenkins-296812'
-                CLUSTER_NAME = 'k8s-cluster'
-                LOCATION = 'us-central1-c'
-                CREDENTIALS_ID = 'kubernetes'		
+	environment {	
+		registry = "suren67/jenkingkeimage"
+registryCredential = 'dockerhub_id'
+dockerImage = ''
+		    PROJECT_ID = 'true-campus-320305'
+		    CLUSTER_NAME = 'jenkink8scluster'
+		    LOCATION = 'us-central1-c'
+		    CREDENTIALS_ID = 'Jenkin_GCP_Cred_ID'
 	}
 	
     stages {
@@ -35,7 +38,10 @@ pipeline {
 		    steps {
 			    sh 'whoami'
 			    script {
-				    myimage = docker.build("ameintu/devops:${env.BUILD_ID}")
+				    // myimage = docker.build("ameintu/devops:${env.BUILD_ID}")
+				    //sh 'docker build -t jenkindockergke:latest .' 
+                	           //sh 'docker tag samplewebapp suren67/jenkindockergke:latest'
+				    dockerImage = docker.build registry + ":$BUILD_ID"
 			    }
 		    }
 	    }
@@ -43,11 +49,15 @@ pipeline {
 	    stage("Push Docker Image") {
 		    steps {
 			    script {
-				    echo "Push Docker Image"
+				    /*echo "Push Docker Image"
 				    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
             				sh "docker login -u ameintu -p ${dockerhub}"
 				    }
-				        myimage.push("${env.BUILD_ID}")
+				        myimage.push("${env.BUILD_ID}")*/
+				    script {
+            docker.withRegistry( '', registryCredential ) {
+                dockerImage.push()
+                dockerImage.push("${env.BUILD_ID}")
 				    
 			    }
 		    }
@@ -55,7 +65,7 @@ pipeline {
 	    
 	    stage('Deploy to K8s') {
 		    steps{
-			    echo "Deployment started ..."
+			    /*echo "Deployment started ..."
 			    sh 'ls -ltr'
 			    sh 'pwd'
 			    sh "sed -i 's/tagversion/${env.BUILD_ID}/g' serviceLB.yaml"
@@ -64,7 +74,11 @@ pipeline {
 			    step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'serviceLB.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
 				echo "Start deployment of deployment.yaml"
 				step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
-			    echo "Deployment Finished ..."
+			   */
+			    sh "sed -i 's/tagversion/${env.BUILD_ID}/g' deployment.yaml"
+                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, 
+		      location: env.LOCATION, manifestPattern: 'deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
+			   echo "Deployment Finished ..."
 		    }
 	    }
     }
