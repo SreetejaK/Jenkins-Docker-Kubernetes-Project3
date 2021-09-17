@@ -17,7 +17,7 @@ spec:
   spec:
    containers:
    - name: myapp
-     image: suren67/samplewebapp:tagversion
+     image: suren67/jenkingkeimage:tagversion
      ports:
      - containerPort: 8080
 
