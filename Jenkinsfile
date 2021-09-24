@@ -6,7 +6,7 @@ pipeline {
        maven "MAVEN_HOME"
     }
 environment {
-registry = "sreeteja07/samplewebapp"
+registry = "sreeteja07/jibmvnpluginpoc"
 registryCredential = 'dockerhub_id'
 dockerImage = ''
 }
@@ -14,7 +14,7 @@ dockerImage = ''
       stage('checkout') {
            steps {
              
-                git branch: 'master', url: 'https://github.com/SreetejaK/CI-CD-using-Docker.git'
+                git branch: 'main', url: 'https://github.com/SreetejaK/Jenkins-Docker-Kubernetes-Project3.git'
              
           }
         }
