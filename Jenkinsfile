@@ -11,13 +11,18 @@ registryCredential = 'dockerhub_id'
 dockerImage = ''
 }
  stages {
-      stage('checkout') {
-           steps {
+	 stage('Scm Checkout') {
+		    steps {
+			    checkout scm
+		    }
+	    }
+//       stage('checkout') {
+//            steps {
              
-                git branch: 'main', url: 'https://github.com/SreetejaK/Jenkins-Docker-Kubernetes-Project3.git'
+//                 git branch: 'main', url: 'https://github.com/SreetejaK/Jenkins-Docker-Kubernetes-Project3.git'
              
-          }
-        }
+//           }
+//         }
 	 stage('Execute Maven') {
            steps {
              
